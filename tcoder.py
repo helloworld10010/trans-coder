@@ -81,10 +81,20 @@ def ensure_clean_dir(path: Path):
 
 def rename_video(original_name: str) -> str:
     """
-    在此实现你 PowerShell Rename-Item 的等价逻辑
+    从文件名中提取“第XX集”，统一命名为“第XX集”
+    如果无法识别集数，则保留原名
     """
+
     name = original_name.strip()
-    return name
+
+    # 匹配：第1集 / 第01集 / 第 1 集
+    m = re.search(r"第\s*(\d+)\s*集", name)
+    if not m:
+        # 没匹配到，原样返回（防止误伤）
+        return name
+
+    ep = int(m.group(1))
+    return f"{ep:02d}"
 
 # ===================== 主流程 =====================
 
@@ -141,4 +151,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
